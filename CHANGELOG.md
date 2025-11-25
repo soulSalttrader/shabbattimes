@@ -28,8 +28,16 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.1.0] - 2025-11-25
+
+### Added
+
+- Introduced debug flag and state transition logging
+- Introduced decoupled navigation architecture
+
 ## [v0.0.1] - 2025-10-15
 
 - initial commit
 
+[v0.1.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.0.1...v0.1.0
 [v0.0.1]: https://github.com/soulSalttrader/shabbat-times/releases/tag/v0.0.1
