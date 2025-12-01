@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import il.soulSalttrader.retro.shabbatApp.model.ShabbatUiState
 import il.soulSalttrader.retro.shabbatApp.viewModel.ShabbatViewModel
 
 @Composable
@@ -15,11 +16,11 @@ fun ShabbatScreen() {
         is ShabbatUiState.Loading -> LoadingScreen()
 
         is ShabbatUiState.Success -> ShabbatContent(
-            result = (uiState as ShabbatUiState.Success).result,
+            result = (uiState as ShabbatUiState.Success).data,
         )
 
-        is ShabbatUiState.Error   -> ErrorScreen(
-            message = (uiState as ShabbatUiState.Error).message,
+        is ShabbatUiState.Failure -> FailureScreen(
+            message = (uiState as ShabbatUiState.Failure).message,
             onRetry = viewModel::retry
         )
     }

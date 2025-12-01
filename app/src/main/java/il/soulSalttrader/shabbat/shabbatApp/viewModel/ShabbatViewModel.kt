@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import il.soulSalttrader.retro.core.Debug
-import il.soulSalttrader.retro.shabbatApp.api.RetrofitInstance
-import il.soulSalttrader.retro.shabbatApp.content.ShabbatUiState
+import il.soulSalttrader.retro.shabbatApp.model.ShabbatUiState
+import il.soulSalttrader.retro.shabbatApp.network.NetworkResult
+import il.soulSalttrader.retro.shabbatApp.repository.ShabbatRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,33 +15,32 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class ShabbatViewModel @Inject constructor() : ViewModel() {
+class ShabbatViewModel @Inject constructor(
+    private val repository: ShabbatRepository
+) : ViewModel() {
     private val _uiState: MutableStateFlow<ShabbatUiState> = MutableStateFlow(ShabbatUiState.Loading)
     val uiState: StateFlow<ShabbatUiState> = _uiState.asStateFlow()
 
-    init { loadShabbatTimes() }
+    init { refresh() }
 
-    fun retry() = loadShabbatTimes()
+    fun retry() = refresh()
 
-    private fun loadShabbatTimes() {
+    private fun refresh() {
         viewModelScope.launch {
             _uiState.value = ShabbatUiState.Loading
 
-            runCatching {
-                RetrofitInstance.api.getShabbatTimes()
-            }.onSuccess { response ->
-                if (Debug.enabled) Log.d("ShabbatViewModel.getShabbatTimes", response.status)
+            _uiState.value = when (val result = repository.getShabbatTimes()) {
+                is NetworkResult.Success -> {
+                    if (Debug.enabled) Log.d("ShabbatViewModel.refresh", "${result.data}")
 
-                when {
-                    response.status.equals("OK", ignoreCase = true) -> {
-                        _uiState.value = ShabbatUiState.Success(response.results)
-                    }
-                    else -> _uiState.value = ShabbatUiState.Error("API returned ${response.status}")
+                    ShabbatUiState.Success(data = result.data)
                 }
 
-            }.onFailure { exception ->
-                _uiState.value = ShabbatUiState.Error(exception.message ?: "Unknown error")
-                Log.d("ShabbatViewModel.getShabbatTimes", "${exception.message}")
+                is NetworkResult.Failure -> {
+                    if (Debug.enabled) Log.d("ShabbatViewModel.refresh", "message: ${result.message}, cause: ${result.cause}")
+
+                    ShabbatUiState.Failure(message = result.message, cause = result.cause)
+                }
             }
         }
     }
