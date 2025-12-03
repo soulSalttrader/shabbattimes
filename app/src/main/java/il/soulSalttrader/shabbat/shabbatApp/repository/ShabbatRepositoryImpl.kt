@@ -2,10 +2,21 @@ package il.soulSalttrader.retro.shabbatApp.repository
 
 import android.util.Log
 import il.soulSalttrader.retro.core.Debug
-import il.soulSalttrader.retro.shabbatApp.model.Shabbat
+import il.soulSalttrader.retro.shabbatApp.common.getOrElse
+import il.soulSalttrader.retro.shabbatApp.common.toDisplayString
+import il.soulSalttrader.retro.shabbatApp.common.upcomingCandleLightingDate
+import il.soulSalttrader.retro.shabbatApp.common.upcomingHavdalahDate
+import il.soulSalttrader.retro.shabbatApp.constants.ShabbatOffsets.HILUCH_MIL_MINUTES
+import il.soulSalttrader.retro.shabbatApp.constants.ShabbatOffsets.TZEIT_HAKOCHAVIM_MINUTES
+import il.soulSalttrader.retro.shabbatApp.model.HalachicTimes
+import il.soulSalttrader.retro.shabbatApp.model.SolarTimes
+import il.soulSalttrader.retro.shabbatApp.model.toDomain
 import il.soulSalttrader.retro.shabbatApp.network.NetworkResult
 import il.soulSalttrader.retro.shabbatApp.network.ShabbatAPIService
+import il.soulSalttrader.retro.shabbatApp.settings.UserPreferences
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -16,17 +27,18 @@ import javax.inject.Singleton
 class ShabbatRepositoryImpl @Inject constructor(
     private val apiService: ShabbatAPIService,
     private val dispatcher: CoroutineDispatcher,
+    private val userPreferences: UserPreferences,
 ) : ShabbatRepository {
 
-    override suspend fun getShabbatTimes(): NetworkResult<Shabbat> = withContext(context = dispatcher) {
+    override suspend fun getSolarTimes(date: String): NetworkResult<SolarTimes> = withContext(context = dispatcher) {
         runCatching {
-            apiService.getShabbatTimes()
+            apiService.getSolarTimes(date = date)
         }
             .map { dto ->
-                if (Debug.enabled) Log.d("ShabbatRepositoryImpl.getShabbatTimes", dto.status)
+                if (Debug.enabled) Log.d("ShabbatRepositoryImpl.getSolarTimes", dto.status)
 
                 when (dto.status.uppercase()) {
-                    "OK" -> NetworkResult.Success(data = dto.results)
+                    "OK" -> NetworkResult.Success(data = dto.results.toDomain(userPreferences.is24HourFormat()))
                     else -> NetworkResult.Failure(message = dto.status)
                 }
             }
@@ -37,10 +49,29 @@ class ShabbatRepositoryImpl @Inject constructor(
                     else             -> exception.message ?: "Unexpected error"
                 }
 
-                if (Debug.enabled) Log.d("ShabbatRepositoryImpl.getShabbatTimes", message)
+                if (Debug.enabled) Log.d("ShabbatRepositoryImpl.getSolarTimes", message)
 
                 NetworkResult.Failure(message = message, cause = exception)
             }
             .getOrThrow()
+    }
+
+    override suspend fun getHalachicTimes(): NetworkResult<HalachicTimes> = withContext(dispatcher) {
+        val friday = upcomingCandleLightingDate()
+        val saturday = upcomingHavdalahDate()
+
+        val (fridaySolar, saturdaySolar) = awaitAll(
+            async { getSolarTimes(friday.toDisplayString()) },
+            async { getSolarTimes(saturday.toDisplayString()) }
+        ).map { it.getOrElse { failure -> return@withContext failure } }
+
+        NetworkResult.Success(
+            HalachicTimes(
+                candleLightingTime = fridaySolar.sunset.minusMinutes(HILUCH_MIL_MINUTES),
+                candleLightingDate = friday,
+                havdalahTime       = saturdaySolar.sunset.plusMinutes(TZEIT_HAKOCHAVIM_MINUTES),
+                havdalahDate       = saturday
+            )
+        )
     }
 }

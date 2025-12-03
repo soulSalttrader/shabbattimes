@@ -1,10 +1,9 @@
-package il.soulSalttrader.retro.shabbatApp.model
+package il.soulSalttrader.retro.shabbatApp.network.dto
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Shabbat(
+data class SolarTimes(
     val date: String = "",
-    val sunrise: String = "",
     val sunset: String = "",
 )
