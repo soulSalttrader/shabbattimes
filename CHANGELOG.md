@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.4.0] - 2025-12-03
+
+### Added
+
+- Implemented halachic times calculation and display
+
 ## [v0.3.0] - 2025-12-01
 
 ### Added
@@ -51,6 +57,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.4.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.0.1...v0.1.0
