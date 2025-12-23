@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.5.0] - 2025-12-23
+
+### Added
+
+- Unified MVI event handling and centralized app state management
+
 ## [v0.4.0] - 2025-12-03
 
 ### Added
@@ -57,6 +63,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.5.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.3.0...v0.4.0
 [v0.3.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.2.0...v0.3.0
 [v0.2.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.1.0...v0.2.0
