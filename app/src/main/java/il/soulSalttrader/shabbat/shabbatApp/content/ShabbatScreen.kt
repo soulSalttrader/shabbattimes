@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import il.soulSalttrader.retro.shabbatApp.model.HalachicTimesDisplay
 import il.soulSalttrader.retro.shabbatApp.model.ShabbatUiState
+import il.soulSalttrader.retro.core.event.ShabbatEvent
 import il.soulSalttrader.retro.shabbatApp.viewModel.ShabbatViewModel
 
 @Composable
@@ -16,12 +18,12 @@ fun ShabbatScreen() {
         is ShabbatUiState.Loading -> LoadingScreen()
 
         is ShabbatUiState.Success -> ShabbatContent(
-            result = (uiState as ShabbatUiState.Success).data,
+            result = (uiState as ShabbatUiState.Success).data ?: HalachicTimesDisplay(),
         )
 
         is ShabbatUiState.Failure -> FailureScreen(
             message = (uiState as ShabbatUiState.Failure).message,
-            onRetry = viewModel::retry
+            onRetry = { viewModel.dispatch(event = ShabbatEvent.Load) }
         )
     }
 }

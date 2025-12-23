@@ -4,32 +4,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import il.soulSalttrader.retro.core.BadgeReducer
-import il.soulSalttrader.retro.core.Model
-import il.soulSalttrader.retro.core.Reduce
+import il.soulSalttrader.retro.core.model.AppModel
 import il.soulSalttrader.retro.core.content.SplitScreen
-import il.soulSalttrader.retro.core.nav.Navigator
+import il.soulSalttrader.retro.core.event.AppEvent
 import il.soulSalttrader.retro.counterApp.CounterScreen
 import il.soulSalttrader.retro.counterApp.remember.CounterRememberScreen
 import il.soulSalttrader.retro.navigation.experimental.CounterScreen
 
 fun NavGraphBuilder.mainNavGraph(
-    modifier: Modifier,
-    navigator: Navigator,
-    state: Model,
-    reducers: Reduce,
-    onBadgeReducer: (BadgeReducer) -> Unit
+    state: AppModel,
+    onEvent: (AppEvent) -> Unit,
 ) {
-    topNavGraph(onBadgeReducer)
-    bottomNavGraph(modifier, navigator, state, reducers)
+    topNavGraph(onEvent = onEvent)
+    bottomNavGraph(state = state, onEvent = onEvent)
 
     composable<CounterScreen> {
         SplitScreen(
             modifier = Modifier.fillMaxSize(),
             topContent = {
                 CounterScreen(
-                    state = state.counterState,
-                    onReduce = reducers.onCounterReducer,
+                    state = state.counter,
+                    onEvent = onEvent,
                 )
             },
             bottomContent = {

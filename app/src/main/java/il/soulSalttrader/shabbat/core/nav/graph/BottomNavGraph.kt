@@ -6,14 +6,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import il.soulSalttrader.retro.breatheApp.BreatheScreen
-import il.soulSalttrader.retro.core.Model
-import il.soulSalttrader.retro.core.Reduce
+import il.soulSalttrader.retro.core.model.AppModel
 import il.soulSalttrader.retro.core.content.SplitScreen
+import il.soulSalttrader.retro.core.event.AppEvent
 import il.soulSalttrader.retro.core.nav.NavItems.Breathe
 import il.soulSalttrader.retro.core.nav.NavItems.Home
 import il.soulSalttrader.retro.core.nav.NavItems.Settings
 import il.soulSalttrader.retro.core.nav.NavTargetBottom
-import il.soulSalttrader.retro.core.nav.Navigator
 import il.soulSalttrader.retro.counterApp.CounterScreen
 import il.soulSalttrader.retro.counterApp.remember.CounterRememberScreen
 import il.soulSalttrader.retro.shabbatApp.content.FailureScreen
@@ -21,10 +20,8 @@ import il.soulSalttrader.retro.shabbatApp.content.ShabbatScreen
 import il.soulSalttrader.retro.timerApp.TimerScreen
 
 fun NavGraphBuilder.bottomNavGraph(
-    modifier: Modifier,
-    navigator: Navigator,
-    state: Model,
-    reducers: Reduce,
+    state: AppModel,
+    onEvent: (AppEvent) -> Unit,
 ) {
     composable<NavTargetBottom.Alerts> { FailureScreen(message = "No internet connection") { } }
 
@@ -33,10 +30,8 @@ fun NavGraphBuilder.bottomNavGraph(
 
         BreatheScreen(
             modifier = Modifier,
-            breatheState = state.breatheState,
-            timerState = state.timerState,
-            onBreatheReduce = reducers.onBreatheReducer,
-            onTimerReduce = reducers.onTimerReducer,
+            state = state,
+            onEvent = onEvent,
         )
     }
 
@@ -47,8 +42,8 @@ fun NavGraphBuilder.bottomNavGraph(
             modifier = Modifier.fillMaxSize(),
             topContent = {
                 CounterScreen(
-                    state = state.counterState,
-                    onReduce = reducers.onCounterReducer,
+                    state = state.counter,
+                    onEvent = onEvent,
                 )
             },
             bottomContent = {
@@ -60,8 +55,8 @@ fun NavGraphBuilder.bottomNavGraph(
         Settings.title?.let { text -> Text(text = text) }
 
         TimerScreen(
-            state = state.timerState,
-            onReduce = reducers.onTimerReducer,
+            state = state.timer,
+            onEvent = onEvent,
         )
     }
 
