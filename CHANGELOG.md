@@ -28,6 +28,13 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.6.1] - 2026-01-31
+
+### Added
+
+- Added Gradle configuration and app shell after git filter-repo extraction [pull/1](https://github.com/soulSalttrader/shabbat-times/pull/1)
+- Extracted NavController handlers with logging [pull/2](https://github.com/soulSalttrader/shabbat-times/pull/2)
+
 ## [v0.6.0] - 2026-01-22
 
 ### Added
@@ -69,6 +76,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.6.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.4.0...v0.5.0
 [v0.4.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.3.0...v0.4.0
