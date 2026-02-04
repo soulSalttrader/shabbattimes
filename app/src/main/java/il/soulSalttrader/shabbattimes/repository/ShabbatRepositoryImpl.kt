@@ -4,15 +4,17 @@ import android.content.Context
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import il.soulSalttrader.shabbattimes.Debug
-import il.soulSalttrader.shabbattimes.common.getOrElse
+import il.soulSalttrader.shabbattimes.common.getOrThrow
 import il.soulSalttrader.shabbattimes.common.toDisplayString
 import il.soulSalttrader.shabbattimes.common.upcomingCandleLightingDate
 import il.soulSalttrader.shabbattimes.common.upcomingHavdalahDate
-import il.soulSalttrader.shabbattimes.constants.ShabbatOffsets.HILUCH_MIL_MINUTES
-import il.soulSalttrader.shabbattimes.constants.ShabbatOffsets.TZEIT_HAKOCHAVIM_MINUTES
+import il.soulSalttrader.shabbattimes.location.LocationStatus
+import il.soulSalttrader.shabbattimes.model.SeedCities.BRNO
+import il.soulSalttrader.shabbattimes.model.SeedCities.JERUSALEM
+import il.soulSalttrader.shabbattimes.model.SeedCities.NEW_YORK
+import il.soulSalttrader.shabbattimes.model.City
 import il.soulSalttrader.shabbattimes.model.HalachicTimes
-import il.soulSalttrader.shabbattimes.model.HalachicTimesDisplay
-import il.soulSalttrader.shabbattimes.model.SolarTimes
+import il.soulSalttrader.shabbattimes.model.SeedCities
 import il.soulSalttrader.shabbattimes.model.toDisplay
 import il.soulSalttrader.shabbattimes.model.toDomain
 import il.soulSalttrader.shabbattimes.network.NetworkResult
@@ -36,9 +38,14 @@ class ShabbatRepositoryImpl @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : ShabbatRepository {
 
-    override suspend fun getSolarTimes(date: LocalDate): NetworkResult<SolarTimes> = withContext(context = dispatcher) {
+    override suspend fun getSolarTimes(date: LocalDate, city: City) = withContext(context = dispatcher) {
         runCatching {
-            apiService.getSolarTimes(date = date.toDisplayString())
+            apiService.getSolarTimes(
+                date = date.toDisplayString(),
+                lat = city.coordinates.latitude,
+                lng = city.coordinates.longitude,
+                timezone = city.timeZone.id,
+            )
         }
             .map { dto ->
                 if (Debug.enabled) Log.d("ShabbatRepositoryImpl.getSolarTimes", dto.status)
@@ -62,22 +69,59 @@ class ShabbatRepositoryImpl @Inject constructor(
             .getOrThrow()
     }
 
-    override suspend fun getHalachicTimes(): NetworkResult<HalachicTimesDisplay> = withContext(dispatcher) {
+    override suspend fun getHalachicTimes(city: City) = withContext(dispatcher) {
         val friday = upcomingCandleLightingDate()
         val saturday = upcomingHavdalahDate()
 
-        val (fridaySolar, saturdaySolar) = awaitAll(
-            async { getSolarTimes(friday) },
-            async { getSolarTimes(saturday) }
-        ).map { it.getOrElse { failure -> return@withContext failure } }
+        val locationStatus = when (city) {
+            JERUSALEM -> LocationStatus.Current
+            NEW_YORK -> LocationStatus.Distance(9195)
+            BRNO -> LocationStatus.Distance(2319)
+            else -> LocationStatus.Unknown
+        }
 
-        NetworkResult.Success(
-            HalachicTimes(
-                candleLightingTime = fridaySolar.sunset.minusMinutes(HILUCH_MIL_MINUTES),
-                candleLightingDate = friday,
-                havdalahTime = saturdaySolar.sunset.plusMinutes(TZEIT_HAKOCHAVIM_MINUTES),
-                havdalahDate = saturday
-            ).toDisplay(context)
+        runCatching {
+            awaitAll(
+                async { getSolarTimes(friday, city) },
+                async { getSolarTimes(saturday, city) }
+            ).map { it.getOrThrow() }
+        }.fold(
+            onSuccess = { (fridaySolar, saturdaySolar) ->
+                NetworkResult.Success(
+                    HalachicTimes(
+                        city = city,
+                        candleLightingTime = fridaySolar.sunset.minusMinutes(city.candleLightingOffsetMinutes),
+                        candleLightingDate = friday,
+                        havdalahTime = saturdaySolar.sunset.plusMinutes(city.havdalahOffsetMinutes),
+                        havdalahDate = saturday,
+                        locationStatus = locationStatus,
+                    ).toDisplay(context)
+                )
+            },
+            onFailure = { e ->
+                NetworkResult.Failure(
+                    message = "Failed to calculate Shabbat times for ${city.name}",
+                    cause = e
+                )
+            }
         )
     }
+
+    override suspend fun getHalachicTimesForCities() = withContext(dispatcher) {
+            SeedCities.initial.map { city ->
+                async {
+                    runCatching {
+                        getHalachicTimes(city).getOrThrow()
+                    }.fold(
+                        onSuccess = { NetworkResult.Success(it) },
+                        onFailure = { e ->
+                            NetworkResult.Failure(
+                                message = "Failed to load times for ${city.name}: ${e.message}",
+                                cause = e
+                            )
+                        }
+                    )
+                }
+            }.awaitAll()
+        }
 }
