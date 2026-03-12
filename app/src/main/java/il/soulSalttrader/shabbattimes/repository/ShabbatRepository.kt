@@ -9,5 +9,5 @@ import java.time.LocalDate
 interface ShabbatRepository {
     suspend fun getSolarTimes(date: LocalDate, city: City): NetworkResult<SolarTimes>
     suspend fun getHalachicTimes(city: City): NetworkResult<HalachicTimesDisplay>
-    suspend fun getHalachicTimesForCities(): List<NetworkResult<HalachicTimesDisplay>>
+    suspend fun getHalachicTimes(cities: List<City>): List<NetworkResult<HalachicTimesDisplay>>
 }

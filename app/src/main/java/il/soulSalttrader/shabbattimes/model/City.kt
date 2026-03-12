@@ -11,6 +11,18 @@ data class City(
     @Serializable(with = ZoneIdAsStringSerializer::class)
     val timeZone: ZoneId,
     val timeFormat: Int = 24,
-    val candleLightingOffsetMinutes: Long = 20L,
-    val havdalahOffsetMinutes: Long = 40L,
 )
+
+/**
+ * DSL builder for creating City instances
+ *
+ * Example:
+ * ```
+ * val jerusalem = city {
+ *     name = "Jerusalem"
+ *     coordinates = Coordinates(31.7683, 35.2137)
+ *     timeZone = ZoneId.of("Asia/Jerusalem")
+ * }
+ * ```
+ */
+fun city(block: CityBuilder.() -> Unit): City = CityBuilder().apply(block).build()

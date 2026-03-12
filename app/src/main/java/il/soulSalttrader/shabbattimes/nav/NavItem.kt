@@ -1,6 +1,6 @@
 package il.soulSalttrader.shabbattimes.nav
 
-import il.soulSalttrader.shabbattimes.content.UiIcon
+import il.soulSalttrader.shabbattimes.content.uiIcon.UiIcon
 
 data class NavItem(
     val target: NavTarget,
