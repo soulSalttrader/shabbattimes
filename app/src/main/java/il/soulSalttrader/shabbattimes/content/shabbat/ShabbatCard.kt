@@ -1,5 +1,6 @@
 package il.soulSalttrader.shabbattimes.content.shabbat
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import il.soulSalttrader.shabbattimes.R
 import il.soulSalttrader.shabbattimes.content.uiIcon.UiIcon
+import il.soulSalttrader.shabbattimes.content.uiIcon.UiIconImage
 import il.soulSalttrader.shabbattimes.content.uiIcon.UiIconLabel
 import il.soulSalttrader.shabbattimes.location.LocationStatus
 import il.soulSalttrader.shabbattimes.location.LocationStatus.Current
@@ -35,10 +38,11 @@ fun ShabbatCard(
     colors: CardColors = getDefaultCardColors(item.locationStatus),
     elevation: CardElevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     locationLabel: String = locationStatus.getLocationLabels(),
+    isDraggable: Boolean = false,
     onClick: () -> Unit = {},
 ) {
     ElevatedCard(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 8.dp),
         shape = shape,
@@ -46,19 +50,39 @@ fun ShabbatCard(
         elevation = elevation,
         onClick = onClick,
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            CityTitle(item.city.name)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(modifier = Modifier.padding(16.dp).weight(1f)) {
+                CityTitle(item.city.name)
 
-            UiIconLocationLabel(locationStatus, locationLabel)
+                UiIconLocationLabel(locationStatus, locationLabel)
 
-            Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-            ShabbatKeyTimes(
-                candleLightingTime = item.candleLightingTime,
-                candleLightingDate = item.candleLightingDate,
-                havdalahTime = item.havdalahTime,
-                havdalahDate = item.havdalahDate,
-            )
+                ShabbatKeyTimes(
+                    candleLightingTime = item.candleLightingTime,
+                    candleLightingDate = item.candleLightingDate,
+                    havdalahTime = item.havdalahTime,
+                    havdalahDate = item.havdalahDate,
+                )
+            }
+
+            isDraggable.takeIf { it }?.let {
+                UiIconImage(
+                    modifier = modifier,
+                    icon = UiIcon.Resource(R.drawable.drag_indicator),
+                    contentDescription = "dragIndicator",
+                    contentColor = when (locationStatus) {
+                        Current -> colors.contentColor
+                        else -> colors.contentColor
+                    },
+                )
+            }
         }
     }
 }
@@ -95,7 +119,7 @@ private fun ShabbatKeyTimes(
         }
         Column(modifier = Modifier.weight(1f)) {
             ShabbatDateTime(
-                label = "Havdalah",
+                label = "Havdalah Time",
                 time = havdalahTime,
                 date = havdalahDate,
                 modifier = modifier.padding(vertical = 4.dp)
@@ -134,7 +158,12 @@ private fun CityTitle(
         Text(
             text = name,
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.weight(1f)
+            maxLines = 1,
+            modifier = Modifier.weight(1f),
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                maxFontSize = MaterialTheme.typography.headlineLarge.fontSize
+            )
         )
     }
 }

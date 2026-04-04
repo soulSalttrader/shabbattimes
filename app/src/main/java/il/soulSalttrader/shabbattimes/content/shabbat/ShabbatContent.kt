@@ -15,137 +15,79 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import il.soulSalttrader.shabbattimes.content.FabMenu
+import il.soulSalttrader.shabbattimes.content.reorderable.SwipeConfig
+import il.soulSalttrader.shabbattimes.content.reorderable.rememberReorderableState
+import il.soulSalttrader.shabbattimes.content.reorderable.reorderableList
 import il.soulSalttrader.shabbattimes.content.search.CitySearchScreen
+import il.soulSalttrader.shabbattimes.content.search.SearchConfig
 import il.soulSalttrader.shabbattimes.content.search.SearchItem
-import il.soulSalttrader.shabbattimes.event.AppEvent
-import il.soulSalttrader.shabbattimes.event.PermissionEvent
-import il.soulSalttrader.shabbattimes.event.SearchEvent
-import il.soulSalttrader.shabbattimes.location.LocationStatus
-import il.soulSalttrader.shabbattimes.model.City
-import il.soulSalttrader.shabbattimes.model.HalachicTimesDisplay
 import il.soulSalttrader.shabbattimes.content.search.SearchItems.Add
+import il.soulSalttrader.shabbattimes.model.HalachicTimesDisplay
 
 @Composable
 fun ShabbatContent(
-    halachicTimesDisplay: List<HalachicTimesDisplay>,
-    shabbatDispatch: (AppEvent) -> Unit,
+    items: List<HalachicTimesDisplay>,
+    swipeConfig: SwipeConfig<HalachicTimesDisplay> = SwipeConfig(),
+    searchConfig: SearchConfig,
+    isDraggable: Boolean = true,
 
-    suggestions: List<City>,
-    hasQuery: Boolean,
-    searchActive: Boolean,
-    searchDispatch: (AppEvent) -> Unit,
+    onClick: () -> Unit = {},
 ) {
+    val state = rememberReorderableState(items = items, keyOf = { it.city.id })
+
+    LaunchedEffect(items) {
+        state.updateList(items)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
         LazyColumn(
+            state = state.lazyListState,
             contentPadding = PaddingValues(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            val grouped = halachicTimesDisplay.groupBy { it.locationStatus is LocationStatus.Current }
-
-            grouped[true]?.let { currentItems ->
-                shabbatTimesSection(
-                    items = currentItems,
-                    key = "current_header",
-                    title = "My current location",
-                    onClick = { shabbatDispatch(PermissionEvent.Request) },
+            reorderableList(
+                state = state.reorderableState,
+                header = "My locations",
+                items = state.list,
+                keyOf = { it.city.id },
+                swipeConfig = swipeConfig,
+            ) { item, modifier ->
+                ShabbatCard(
+                    modifier = modifier,
+                    item = item,
+                    isDraggable = isDraggable,
+                    locationStatus = item.locationStatus,
+                    onClick = { onClick() }
                 )
-            }
-
-            grouped[false]?.let { otherItems ->
-                if (otherItems.isNotEmpty()) {
-                    shabbatTimesSection(
-                        items = otherItems,
-                        key = "others_header",
-                        title = "Other locations",
-                        onClick = { shabbatDispatch(PermissionEvent.Request) },
-                    )
-                }
             }
         }
 
-        AnimatedSearchScrim(
-            searchActive = searchActive,
-            onDismiss = { searchDispatch(SearchEvent.SearchVisibilityChanged(false)) },
-        )
-
-        AnimatedSearchOverlay(
-            suggestions = suggestions,
-            hasQuery = hasQuery,
-            searchActive = searchActive,
-            searchDispatch = searchDispatch,
-        )
-
-        AnimatedSearchFab(
-            searchActive = searchActive,
-            onToggle = { searchDispatch(
-                SearchEvent.SearchVisibilityChanged(expanded = !searchActive)
-            )},
-        )
-    }
-}
-
-private fun LazyListScope.shabbatTimesSection(
-    items: List<HalachicTimesDisplay>,
-    key: String,
-    title: String,
-    onClick: () -> Unit,
-) {
-    sectionHeader(key = key, title = title)
-    sectionCards(items = items, onClick = { onClick() })
-}
-
-private fun LazyListScope.sectionCards(
-    modifier: Modifier = Modifier,
-    items: List<HalachicTimesDisplay>,
-    onClick: () -> Unit,
-) {
-    items(items, key = { it.city.id }) { time ->
-        ShabbatCard(
-            modifier = modifier,
-            item = time,
-            locationStatus = time.locationStatus,
-            onClick = { onClick() }
-        )
-    }
-}
-
-private fun LazyListScope.sectionHeader(
-    modifier: Modifier = Modifier,
-    key: String,
-    title: String,
-) {
-    item(key) {
-        Text(
-            text = title,
-            modifier = modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-        )
+        AnimatedSearchScrim(searchConfig = searchConfig)
+        AnimatedSearchOverlay(searchConfig = searchConfig)
+        AnimatedSearchFab(searchConfig = searchConfig)
     }
 }
 
 @Composable
 private fun BoxScope.AnimatedSearchScrim(
     modifier: Modifier = Modifier,
-    searchActive: Boolean,
-    onDismiss: () -> Unit,
+    searchConfig: SearchConfig
 ) {
-    AnimatedVisibility(visible = searchActive) {
+    AnimatedVisibility(visible = searchConfig.state.searchActive) {
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.25f))
-                .clickable { onDismiss() }
+                .clickable { searchConfig.action.onChangeVisibility(false) }
         )
     }
 }
@@ -153,21 +95,15 @@ private fun BoxScope.AnimatedSearchScrim(
 @Composable
 private fun BoxScope.AnimatedSearchOverlay(
     modifier: Modifier = Modifier,
-    suggestions: List<City>,
-    hasQuery: Boolean,
-    searchActive: Boolean,
-    searchDispatch: (AppEvent) -> Unit,
+    searchConfig: SearchConfig,
 ) {
     AnimatedVisibility(
-        visible = searchActive,
+        visible = searchConfig.state.searchActive,
         enter = slideInVertically { -it / 2 } + fadeIn(),
         exit = slideOutVertically { -it / 2 } + fadeOut()
     ) {
         CitySearchScreen(
-            suggestions = suggestions,
-            hasQuery = hasQuery,
-            searchDispatch = searchDispatch,
-            expanded = searchActive,
+            searchConfig = searchConfig,
             modifier = modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 48.dp),
@@ -177,9 +113,8 @@ private fun BoxScope.AnimatedSearchOverlay(
 
 @Composable
 private fun BoxScope.AnimatedSearchFab(
-    searchActive: Boolean,
-    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
+    searchConfig: SearchConfig,
     fabItems: List<SearchItem> = listOf(Add),
 ) {
     AnimatedVisibility(
@@ -187,11 +122,11 @@ private fun BoxScope.AnimatedSearchFab(
             .align(Alignment.BottomEnd)
             .navigationBarsPadding()
             .padding(16.dp),
-        visible = !searchActive
+        visible = !searchConfig.state.searchActive,
     ) {
         FabMenu(
             items = fabItems,
-            onClick = { onToggle() },
+            onClick = { searchConfig.action.onChangeVisibility(!searchConfig.state.searchActive) },
         )
     }
 }
