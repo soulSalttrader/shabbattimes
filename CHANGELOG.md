@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.8.0] - 2026-04-04
+
+### Added
+
+- Added reorderable location management and swipe-to-delete [pull/7](https://github.com/soulSalttrader/shabbat-times/pull/7)
+
 ## [v0.7.0] - 2026-03-14
 
 ### Changed
@@ -86,6 +92,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.8.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.5.0...v0.6.0
