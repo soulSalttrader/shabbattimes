@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.9.0] - 2026-04-27
+
+### Added
+
+- Implemented reactive current location and decouple permission management [pull/9](https://github.com/soulSalttrader/shabbat-times/pull/9)
+
 ## [v0.8.0] - 2026-04-04
 
 ### Added
@@ -92,6 +98,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.9.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.8.0...v0.9.0
 [v0.8.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.7.0...v0.8.0
 [v0.7.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.6.1...v0.7.0
 [v0.6.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.6.0...v0.6.1
