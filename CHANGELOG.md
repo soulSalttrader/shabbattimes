@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.11.0] - 2026-05-24
+
+### Added
+
+- Introduced community traditions, settings screen, and improveded user feedback [pull/16](https://github.com/soulSalttrader/shabbat-times/pull/16)
+
 ## [v0.10.0] - 2026-05-16
 
 ### Added
@@ -110,6 +116,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.11.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.8.0...v0.9.0
