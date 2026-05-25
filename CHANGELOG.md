@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.11.1] - 2026-05-25
+
+### Changed
+
+- Upgraded project infrastructure and standardized build configuration [pull/18](https://github.com/soulSalttrader/shabbat-times/pull/18)
+
 ## [v0.11.0] - 2026-05-24
 
 ### Added
@@ -116,6 +122,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.11.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.9.0...v0.9.1
