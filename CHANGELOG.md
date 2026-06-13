@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.11.2] - 2026-06-13
+
+### Changed
+
+- Established comprehensive permission and UI testing infrastructure [pull/20](https://github.com/soulSalttrader/shabbat-times/pull/20)
+
 ## [v0.11.1] - 2026-05-25
 
 ### Changed
@@ -122,6 +128,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.11.2]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.10.0...v0.11.0
 [v0.10.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.9.1...v0.10.0
