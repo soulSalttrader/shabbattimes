@@ -21,7 +21,7 @@ android {
     defaultConfig {
         applicationId = "il.soulSaltrader.shabbattimes"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "v0.11.2"
 
@@ -132,6 +132,7 @@ dependencies {
     testImplementation(libs.junit4)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
+    testRuntimeOnly(libs.junit.vintage.engine)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
@@ -140,6 +141,7 @@ dependencies {
     testImplementation(libs.kotest.property)
     testImplementation(libs.kotest.runner.junit5)
     testImplementation(libs.androidx.test.runner)
+    testImplementation(libs.robolectric)
 
     // UI / Instrumented Testing
     androidTestImplementation(libs.androidx.junit)
@@ -152,6 +154,7 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     androidTestUtil(libs.androidx.orchestrator)
     kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.mockk.android)
 
     // Debug
     debugImplementation(libs.androidx.ui.tooling)
