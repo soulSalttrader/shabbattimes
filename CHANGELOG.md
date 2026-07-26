@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.12.0] - 2026-07-26
+
+### Added
+
+- Expanded Shabbat preferences, location handling, and connectivity support [pull/22](https://github.com/soulSalttrader/shabbat-times/pull/22)
+
 ## [v0.11.2] - 2026-06-13
 
 ### Changed
@@ -128,6 +134,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.12.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.2...v0.12.0
 [v0.11.2]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.10.0...v0.11.0
