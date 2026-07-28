@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.12.1] - 2026-07-28
+
+### Added
+
+- Introduced automated pull request generation workflow and agent skill [pull/24](https://github.com/soulSalttrader/shabbat-times/pull/24)
+
 ## [v0.12.0] - 2026-07-26
 
 ### Added
@@ -134,6 +140,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.12.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.2...v0.12.0
 [v0.11.2]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.0...v0.11.1
