@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.12.3] - 2026-08-19
+
+### Changed
+
+- Restructured agent guidelines and adopted shared skill-kit [pull/28](https://github.com/soulSalttrader/shabbat-times/pull/28)
+
 ## [v0.12.2] - 2026-08-02
 
 ### Added
@@ -146,6 +152,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.12.3]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/soulSalttrader/shabbat-times/compare/v0.11.2...v0.12.0
