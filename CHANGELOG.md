@@ -28,6 +28,12 @@ Later versions were renumbered from the original tags.
 
 ## [Unreleased]
 
+## [v0.12.4] - 2026-08-23
+
+### Changed
+
+- Bumped skills submodule to v0.1.1 [pull/30](https://github.com/soulSalttrader/shabbat-times/pull/30)
+
 ## [v0.12.3] - 2026-08-19
 
 ### Changed
@@ -152,6 +158,7 @@ Later versions were renumbered from the original tags.
 
 - initial commit
 
+[v0.12.4]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/soulSalttrader/shabbat-times/compare/v0.12.0...v0.12.1
