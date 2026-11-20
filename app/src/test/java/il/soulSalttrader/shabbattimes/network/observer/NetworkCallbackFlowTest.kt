@@ -17,7 +17,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowNetworkCapabilities
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -56,11 +58,14 @@ class NetworkCallbackFlowTest {
         val job = launch { connectivityManager.networkCallbackFlow().collect { values.add(it) } }
         advanceUntilIdle()
 
-        val network = mockk<Network>()
-        val capabilities = mockk<NetworkCapabilities> {
-            every { hasCapability(NET_CAPABILITY_INTERNET) } returns true
-            every { hasCapability(NET_CAPABILITY_VALIDATED) } returns true
+        val network = mockk<Network>(relaxed = true)
+        val capabilities = ShadowNetworkCapabilities.newInstance()
+
+        shadowOf(capabilities).apply {
+            addCapability(NET_CAPABILITY_INTERNET)
+            addCapability(NET_CAPABILITY_VALIDATED)
         }
+
         shadow.setNetworkCapabilities(network, capabilities)
         shadow.networkCallbacks.last().onAvailable(network)
 

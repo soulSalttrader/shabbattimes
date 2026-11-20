@@ -191,6 +191,10 @@ ktlint {
 tasks.withType<Test> {
     useJUnitPlatform()
 
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
     // show test results in console
     testLogging {
         events("passed", "skipped", "failed")
