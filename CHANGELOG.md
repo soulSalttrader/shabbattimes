@@ -1,5 +1,5 @@
 <!--
-  This file owns the *history* of shabbattimes: what and when changed. 
+  This file owns the *history* of shabbattimes: what and when changed.
   It is the single source of truth for the chronological record of the shabbat-times.
 
   CONTRIBUTING.md owns *how* to write entries and the versioning rules.
@@ -15,18 +15,22 @@
 
 # Changelog
 
-All notable changes to shabbattimes are documented in this file.  
+All notable changes to shabbattimes are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).  
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).  
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Each entry links to the PR that introduced it; each release links to a diff against the previous one.
 
-Versions v0.0.1 to v0.6.0 are milestones reconstructed from the history before the shabbattimes feature was extracted into this project. 
-They predate pull requests and the Gradle project, so they carry no PR links and cannot be built. 
+Versions v0.0.1 to v0.6.0 are milestones reconstructed from the history before the shabbattimes feature was extracted into this project.
+They predate pull requests and the Gradle project, so they carry no PR links and cannot be built.
 
 Later versions were renumbered from the original tags.
 
 ## [Unreleased]
+
+### Changed
+
+- Updated AGP, Kotlin, Hilt, and Gradle wrapper
 
 ## [v0.12.4] - 2026-08-23
 
