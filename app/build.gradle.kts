@@ -13,7 +13,12 @@ plugins {
 
 android {
     namespace = "il.soulSalttrader.shabbattimes"
-    compileSdk = 37
+
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "il.soulSaltrader.shabbattimes"
