@@ -31,6 +31,7 @@ Later versions were renumbered from the original tags.
 ### Changed
 
 - Updated AGP, Kotlin, Hilt, and Gradle wrapper
+- Updated project dependencies and SDK configuration
 
 ## [v0.12.4] - 2026-08-23
 

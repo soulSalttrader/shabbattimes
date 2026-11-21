@@ -13,7 +13,12 @@ plugins {
 
 android {
     namespace = "il.soulSalttrader.shabbattimes"
-    compileSdk = 37
+
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "il.soulSaltrader.shabbattimes"
@@ -185,6 +190,10 @@ ktlint {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 
     // show test results in console
     testLogging {
