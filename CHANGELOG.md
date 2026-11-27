@@ -33,6 +33,10 @@ Later versions were renumbered from the original tags.
 - Updated AGP, Kotlin, Hilt, and Gradle wrapper
 - Updated project dependencies and SDK configuration
 
+### Added
+
+- Introduced anonymous installation ID repository and storage
+
 ## [v0.12.4] - 2026-08-23
 
 ### Changed
