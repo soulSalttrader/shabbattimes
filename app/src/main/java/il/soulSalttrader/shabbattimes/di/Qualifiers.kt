@@ -21,3 +21,7 @@ annotation class InMemory
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class Persisted
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class InstallationStore
